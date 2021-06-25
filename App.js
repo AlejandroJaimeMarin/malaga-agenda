@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
 export default function App() {
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  
   
 
   useEffect(() => {
@@ -17,20 +18,37 @@ export default function App() {
      
   }, []);
 
+   /* Maqueto un item del listado */
+  const renderItem = ({item, index}) => {
+      return(
 
+          <View style={styles.item}>
+            <View>
+              <Text style={styles.itemtitulo}>{item.NOMBRE.replace(/(<([^>]+)>)/gi, "")}</Text>
+              <Text>{item.DESCRIPCION.replace(/(<([^>]+)>)/gi, "")}</Text>
+              <Text style={styles.itemcategoria}>{item.CATEGORIA}</Text>
+              <Text>{item.F_INICIO}</Text>
+              <Text>{item.F_FIN}</Text>
+              
+            </View>
+            <View style={styles.itemcontainerbotones}>
+              <TouchableOpacity style={styles.botones} ><Text style={styles.botonestexto}>Saber más</Text></TouchableOpacity>
+            </View>
+          </View>
+
+         )
+
+    }
 
   return (
     <View style={{ flex: 1, padding: 24 }}>
-    {isLoading ? <Text>Loading...</Text> : 
+    {isLoading ? <Text>Cargando...</Text> : 
     ( <View style={{ flex: 1, flexDirection: 'column', justifyContent:  'space-between'}}>
-        <Text style={{ fontSize: 18, color: 'green', textAlign: 'center'}}>{data.records_format}</Text>
-        <Text style={{ fontSize: 14, color: 'green', textAlign: 'center', paddingBottom: 10}}>Articles:</Text>
+        <Text style={{ fontSize: 18, color: 'green', textAlign: 'center'}}>Activadades</Text>
         <FlatList
           data={data.result.records}
-          //keyExtractor={({ _id }, index) => _id}
-          renderItem={({ item }) => (
-            <Text>{item.NOMBRE}</Text>
-          )}
+          keyExtractor={item => item._id.toString()} //Debe ser un string
+          renderItem={renderItem}
         />
       </View>
     )}
@@ -44,5 +62,42 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  item: {
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    backgroundColor: '#eceff1',
+    borderRadius: 10,
+    flex: 1,
+    minWidth: '80%',
+  },
+  itemtitulo:{
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  itemcategoria: {
+    fontWeight: "bold",
+  },
+  itemcontainerbotones: {
+    flex: 1,
+    flexDirection: 'row',
+    alignContent: 'space-between',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  botones: {
+    backgroundColor: '#ef5350',
+    margin: 10,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  botonestexto:{
+    fontSize: 14,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
   },
 });
