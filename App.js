@@ -1,16 +1,30 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Button } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-export default function App() {
+
+function PantallaInicio ({navigation}){
+
+  return(
+    <Button
+    title="Test"
+    onPress={() => navigation.navigate('Categoría')}
+  />
+  );
+
+}
+
+function PantallaCategorias({route, navigation }) {
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  
+  const idCategoria  = route.params;
   
 
   useEffect(() => {
-    fetch('https://datosabiertos.malaga.eu/api/3/action/datastore_search?resource_id=6dc53e72-753d-4a84-a151-24fc135cd742')
+    fetch('https://datosabiertos.malaga.eu/api/3/action/datastore_search?resource_id=6dc53e72-753d-4a84-a151-24fc135cd742&q={"CATEGORIA":"Deportes"}')
       .then((response) => response.json())
       .then((json) => setData(json))
       .catch((error) => console.error(error))
@@ -39,6 +53,10 @@ export default function App() {
          )
 
     }
+    var arr = [{"time":"2016-07-26 09:02:27","type":"aa"}, {"time":"2016-04-21 20:35:07","type":"ae"}, {"time":"2016-08-20 03:31:57","type":"ar"}, {"time":"2017-01-19 22:58:06","type":"ae"}, {"time":"2016-08-28 10:19:27","type":"ae"}, {"time":"2016-12-06 10:36:22","type":"ar"}, {"time":"2016-07-09 12:14:03","type":"ar"}, {"time":"2016-10-25 05:05:37","type":"ae"}, {"time":"2016-06-05 07:57:18","type":"ae"}, {"time":"2016-10-08 22:03:03","type":"aa"}, {"time":"2016-08-13 21:27:37","type":"ae"}, {"time":"2016-04-09 07:36:16","type":"ar"}, {"time":"2016-12-30 17:20:08","type":"aa"}, {"time":"2016-03-11 17:31:46","type":"aa"}, {"time":"2016-05-04 14:08:25","type":"ar"}, {"time":"2016-11-29 05:21:02","type":"ar"}, {"time":"2016-03-08 05:46:01","type":"ar"}, ];
+    var filtered = arr.filter(a => a.type == "ar");
+    //console.log(data);
+   //var filtered = data.filter(a => a.CATEGORIA == "Deportes");
 
   return (
     <View style={{ flex: 1, padding: 24 }}>
@@ -53,6 +71,22 @@ export default function App() {
       </View>
     )}
   </View>
+  );
+}
+
+
+const Stack = createStackNavigator();
+
+export default function App() {
+
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Inicio">
+        <Stack.Screen name="Inicio" component={PantallaInicio} />
+        <Stack.Screen name="Categoría" component={PantallaCategorias} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
@@ -101,3 +135,5 @@ const styles = StyleSheet.create({
     textTransform: "uppercase"
   },
 });
+
+
