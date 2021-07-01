@@ -115,7 +115,7 @@ function PantallaCategorias({route, navigation }) {
       .finally(() => setLoading(false));
      
   }, []);
-  console.log(data.result.resource_id);
+  console.log(data);
  
   
 
