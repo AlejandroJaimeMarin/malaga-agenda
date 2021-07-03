@@ -168,6 +168,15 @@ function PantallaFilla({route, navigation }){
 
   const {titulo, descripcion, categoria, direccion1, direccion2, especialidad, destinatarios, finicio, ffinal, telefono, email, web, horario} = route.params;
 
+  //Función para mostrar las fechas con un formato más legible
+  let fechaParse = (fecha) => new Date (fecha).toString()
+
+  let fechaInicio = fechaParse(finicio);
+  let fechaFinal = fechaParse(ffinal)
+
+  //const fecha = transformarFecha(finicio);
+
+  
   return (
     <View>
       <Text>{titulo.replace(/(<([^>]+)>)/gi, "")}</Text>
@@ -177,8 +186,8 @@ function PantallaFilla({route, navigation }){
       <Text>{direccion2}</Text>
       <Text>{especialidad}</Text>
       <Text>{destinatarios}</Text>
-      <Text>{finicio}</Text>
-      <Text>{ffinal}</Text>
+      <Text>{fechaInicio}</Text>
+      <Text>{fechaFinal}</Text>
       <Text>{horario}</Text>
       <Text>{telefono}</Text>
       <Text>{email}</Text>
