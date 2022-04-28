@@ -104,21 +104,39 @@ function PantallaInicio ({navigation}){
 function PantallaCategorias({route, navigation }) {
 
   const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setMasterDataSource] = useState([]);
   const idCategoria  = route.params;
+  const currentTime = formatDate(new Date());
   //console.log(idCategoria);
   //`https://datosabiertos.malaga.eu/api/3/action/datastore_search_sql?sql=SELECT%20*%20from%20"6dc53e72-753d-4a84-a151-24fc135cd742"%20WHERE%20"CATEGORIA"%20LIKE%20${idCategoria}`
   //`https://datosabiertos.malaga.eu/api/3/action/datastore_search?resource_id=6dc53e72-753d-4a84-a151-24fc135cd742&q={"CATEGORIA":"${idCategoria}"}`
   useEffect(() => {
-    fetch(`https://datosabiertos.malaga.eu/api/3/action/datastore_search?resource_id=6dc53e72-753d-4a84-a151-24fc135cd742&q={"CATEGORIA":"${idCategoria}"}`)
+    fetch(`https://datosabiertos.malaga.eu/api/3/action/datastore_search?resource_id=9db3cc24-ebb3-4822-9371-fef0a4e05da0&q={"CATEGORIA":"${idCategoria}"}`)
       .then((response) => response.json())
-      .then((json) => setData(json))
+      .then((json) => setMasterDataSource(json))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
      
   }, []);
   
+  function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+  }
   
+  function formatDate(date) {
+    return [
+      padTo2Digits(date.getDate()),
+      padTo2Digits(date.getMonth() + 1),
+      date.getFullYear(),
+    ].join('/');
+  }
+  
+  if (isLoading == false){
+
+    const filteredData = data.result.records.filter(x => x.F_INICIO > currentTime);
+    console.log(filteredData);
+    console.log(currentTime);
+  }
 
    /* Maqueto un item del listado */
   const renderItem = ({item, index}) => {
@@ -128,6 +146,7 @@ function PantallaCategorias({route, navigation }) {
             <View>
               <Text style={styles.itemtitulo}>{item.NOMBRE.replace(/(<([^>]+)>)/gi, "")}</Text>
               <Text>{item.DESCRIPCION.replace(/(<([^>]+)>)/gi, "")}</Text>
+              <Text>{item.F_INICIO}</Text>
             </View>
             <View style={styles.itemcontainerbotones}>
               <TouchableOpacity 
@@ -143,11 +162,7 @@ function PantallaCategorias({route, navigation }) {
          )
 
     }
-    //var arr = [{"time":"2016-07-26 09:02:27","type":"aa"}, {"time":"2016-04-21 20:35:07","type":"ae"}, {"time":"2016-08-20 03:31:57","type":"ar"}, {"time":"2017-01-19 22:58:06","type":"ae"}, {"time":"2016-08-28 10:19:27","type":"ae"}, {"time":"2016-12-06 10:36:22","type":"ar"}, {"time":"2016-07-09 12:14:03","type":"ar"}, {"time":"2016-10-25 05:05:37","type":"ae"}, {"time":"2016-06-05 07:57:18","type":"ae"}, {"time":"2016-10-08 22:03:03","type":"aa"}, {"time":"2016-08-13 21:27:37","type":"ae"}, {"time":"2016-04-09 07:36:16","type":"ar"}, {"time":"2016-12-30 17:20:08","type":"aa"}, {"time":"2016-03-11 17:31:46","type":"aa"}, {"time":"2016-05-04 14:08:25","type":"ar"}, {"time":"2016-11-29 05:21:02","type":"ar"}, {"time":"2016-03-08 05:46:01","type":"ar"}, ];
-   // var filtered = arr.filter(a => a.type == "ar");
-    //console.log(data);
-   //var filtered = data.filter(a => a.CATEGORIA == "Deportes");
-   //console.log(filtered)
+    
   return (
     <View style={{ flex: 1, padding: 24 }}>
     {isLoading ? <Text>Cargando...</Text> : 
@@ -164,7 +179,7 @@ function PantallaCategorias({route, navigation }) {
   );
 }
 
-function PantallaFilla({route, navigation }){
+function PantallaFicha({route, navigation }){
 
   const {titulo, descripcion, categoria, direccion1, direccion2, especialidad, destinatarios, finicio, ffinal, telefono, email, web, horario} = route.params;
 
@@ -206,7 +221,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Inicio">
         <Stack.Screen name="Inicio" component={PantallaInicio} />
         <Stack.Screen name="Categoría" component={PantallaCategorias} />
-        <Stack.Screen name="Ficha" component={PantallaFilla}/>
+        <Stack.Screen name="Ficha" component={PantallaFicha}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
